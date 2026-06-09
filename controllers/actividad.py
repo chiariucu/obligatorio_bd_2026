@@ -1,4 +1,5 @@
-from BD.obligatorio1.config.database import obtener_conexion
+"from BD.obligatorio1.config.database import obtener_conexion "
+from config.database import obtener_conexion
 
 # ABM DE ACTIVIDADES DEPORTIVAS:
 
