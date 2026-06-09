@@ -27,7 +27,7 @@ def registrar_disciplina(nombre_disciplina):
     finally:
         if cursor is not None:
             cursor.close()
-        if conexion is None:
+        if conexion is not None:
             conexion.close()
 
 # 2. Baja (eliminar una disciplina deportiva po ID):
