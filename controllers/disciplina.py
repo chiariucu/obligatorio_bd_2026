@@ -15,7 +15,7 @@ def registrar_disciplina(nombre_disciplina):
         cursor = conexion.cursor()
 
         # Consulta (previendo posibles ataque de SQL injection).
-        query = "INSERT INTO DISCIPLINA (nombre) VALUES (%s)"
+        query = "INSERT INTO disciplina (nombre) VALUES (%s)"
         cursor.execute(query, (nombre_disciplina,))
         conexion.commit()
 

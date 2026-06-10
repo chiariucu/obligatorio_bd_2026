@@ -4,10 +4,12 @@ from mysql.connector import Error #Para prevenir errores.
 # CONFIGURACIÓN A MySQL.
 DB_CONFIG = {
     "host": "localhost",
-    "port": 3307,
+    #"port": 3307,
+    "port": 3306,
     "user": "root",
     "password": "rootpassword",
-    "database": "obligatorio1",
+    #"database": "obligatorio1",
+    "database": "actividades_deportivas",
     "autocommit": False  # Lo dejamos en False para que no se guarden datos incompletos antes de tiempo.
 }
 # CONEXIÓN (contempla fallas).

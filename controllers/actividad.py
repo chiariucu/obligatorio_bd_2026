@@ -4,7 +4,7 @@ from config.database import obtener_conexion
 # ABM DE ACTIVIDADES DEPORTIVAS:
 
 #1. Alta (insertar actividades deportivas):
-def registrar_actividad(nombre, id_disciplina, espacio, cupo_maximo, dia, horario, estado):
+def registrar_actividad(nombre_actividad, id_disciplina, id_espacio, cupo_max, dia, horario, estado):
     conexion = obtener_conexion()
     cursor = None
     if conexion is None:
@@ -12,10 +12,10 @@ def registrar_actividad(nombre, id_disciplina, espacio, cupo_maximo, dia, horari
         return False
     try:
         cursor = conexion.cursor()
-        query = "INSERT INTO ACTIVIDAD (nombre, id_disciplina, espacio, cupo_maximo, dia, horario, estado) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-        cursor.execute(query, (nombre, id_disciplina, espacio, cupo_maximo, dia, horario, estado)) # Pasamos todas las variables ordenadas dentro de la tupla.
+        query = "INSERT INTO ACTIVIDAD (nombre_actividad, id_disciplina, id_espacio, cupo_max, dia, horario, estado) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        cursor.execute(query, (nombre_actividad, id_disciplina, id_espacio, cupo_max, dia, horario, estado)) # Pasamos todas las variables ordenadas dentro de la tupla.
         conexion.commit()
-        print(f"Actividad '{nombre}' registrada con éxito en la BD.")
+        print(f"Actividad '{nombre_actividad}' registrada con éxito en la BD.")
         return True
     except Exception as e:
         if conexion:
@@ -92,7 +92,7 @@ def listar_actividades():
         return []
     try:
         cursor = conexion.cursor(dictionary=True)
-        query = "SELECT id_actividad, nombre, id_disciplina, espacio, cupo_maximo, dia, horario, estado FROM ACTIVIDAD"
+        query = "SELECT id_actividad, nombre_actividad, id_disciplina, id_espacio, cupo_max, dia, horario, estado FROM ACTIVIDAD"
         cursor.execute(query)
         return cursor.fetchall()
     except Exception as e:
