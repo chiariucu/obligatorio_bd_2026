@@ -4,7 +4,7 @@ from BD.obligatorio1.config.database import obtener_conexion
 
 # 1. Alta (insertar una disciplina):
 # Recibe el nombre de una disciplina desde el frontend y la inserta en la BD.
-def registrar_disciplina(nombre_disciplina):
+def registrar_disciplina(nombre):
     conexion = obtener_conexion()
     cursor = None
     if conexion is None:
@@ -15,10 +15,10 @@ def registrar_disciplina(nombre_disciplina):
 
         # Consulta (previendo posibles ataque de SQL injection).
         query = "INSERT INTO DISCIPLINA (nombre) VALUES (%s)"
-        cursor.execute(query, (nombre_disciplina,))
+        cursor.execute(query, (nombre,))
         conexion.commit()
 
-        print(f"Disciplina '{nombre_disciplina}' registrada con éxito en la BD.")
+        print(f"Disciplina '{nombre}' registrada con éxito en la BD.")
         return True
     except Exception as e:
         conexion.rollback()

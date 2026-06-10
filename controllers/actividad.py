@@ -2,8 +2,8 @@ from BD.obligatorio1.config.database import obtener_conexion
 
 # ABM DE ACTIVIDADES DEPORTIVAS:
 
-#1. Alta (insertar actividades deportivas):
-def registrar_actividad(nombre, id_disciplina, espacio, cupo_maximo, dia, horario, estado):
+# 1. Alta (insertar actividades deportivas):
+def registrar_actividad(nombre_actividad, id_disciplina, id_espacio, cupo_max, dia, horario, estado):
     conexion = obtener_conexion()
     cursor = None
     if conexion is None:
@@ -11,10 +11,13 @@ def registrar_actividad(nombre, id_disciplina, espacio, cupo_maximo, dia, horari
         return False
     try:
         cursor = conexion.cursor()
-        query = "INSERT INTO ACTIVIDAD (nombre, id_disciplina, espacio, cupo_maximo, dia, horario, estado) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-        cursor.execute(query, (nombre, id_disciplina, espacio, cupo_maximo, dia, horario, estado)) # Pasamos todas las variables ordenadas dentro de la tupla.
+        query = """
+            INSERT INTO actividad (nombre_actividad, id_disciplina, id_espacio, cupo_max, dia, horario, estado) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """
+        cursor.execute(query, (nombre_actividad, id_disciplina, id_espacio, cupo_max, dia, horario, estado))
         conexion.commit()
-        print(f"Actividad '{nombre}' registrada con éxito en la BD.")
+        print(f"Actividad '{nombre_actividad}' registrada con éxito en la BD.")
         return True
     except Exception as e:
         if conexion:
@@ -36,7 +39,7 @@ def eliminar_actividad(id_actividad):
         return False
     try:
         cursor = conexion.cursor()
-        query = "DELETE FROM ACTIVIDAD WHERE id_actividad = %s" # Consulta para borrar por ID.
+        query = "DELETE FROM actividad WHERE id_actividad = %s"
         cursor.execute(query, (id_actividad,))
         conexion.commit()
         print(f"Actividad con ID {id_actividad} eliminada correctamente.")
@@ -52,9 +55,9 @@ def eliminar_actividad(id_actividad):
         if conexion is not None:
             conexion.close()
 
-#3. Modificar (actualiza datos de una actividad existente).
-# Colocamos nuevo_ para no confundirnos con los datos viejos.
-def modificar_actividad(id_actividad, nuevo_nombre, nuevo_id_disciplina, nuevo_espacio, nuevo_cupo, nuevo_dia,
+
+# 3. Modificar (actualiza datos de una actividad existente).
+def modificar_actividad(id_actividad, nuevo_nombre_actividad, nuevo_id_disciplina, nuevo_id_espacio, nuevo_cupo, nuevo_dia,
                         nuevo_horario, nuevo_estado):
     conexion = obtener_conexion()
     cursor = None
@@ -63,10 +66,12 @@ def modificar_actividad(id_actividad, nuevo_nombre, nuevo_id_disciplina, nuevo_e
         return False
     try:
         cursor = conexion.cursor()
-        # Consulta UPDATE para modificar los datos de la actividad que coincida con el ID.
-        query = "UPDATE ACTIVIDAD SET nombre = %s, id_disciplina = %s, espacio = %s, cupo_maximo = %s, dia = %s, horario = %s, estado = %s WHERE id_actividad = %s"
-        # Pasamos los datos nuevos en el orden exacto de los %s, dejando el ID para el final.
-        cursor.execute(query, (nuevo_nombre, nuevo_id_disciplina, nuevo_espacio, nuevo_cupo, nuevo_dia, nuevo_horario,
+        query = """
+            UPDATE actividad 
+            SET nombre_actividad = %s, id_disciplina = %s, id_espacio = %s, cupo_max = %s, dia = %s, horario = %s, estado = %s 
+            WHERE id_actividad = %s
+        """
+        cursor.execute(query, (nuevo_nombre_actividad, nuevo_id_disciplina, nuevo_id_espacio, nuevo_cupo, nuevo_dia, nuevo_horario,
                                nuevo_estado, id_actividad))
         conexion.commit()
         print(f"Actividad con ID {id_actividad} modificada correctamente.")
@@ -91,7 +96,7 @@ def listar_actividades():
         return []
     try:
         cursor = conexion.cursor(dictionary=True)
-        query = "SELECT id_actividad, nombre, id_disciplina, espacio, cupo_maximo, dia, horario, estado FROM ACTIVIDAD"
+        query = "SELECT id_actividad, nombre_actividad, id_disciplina, id_espacio, cupo_max, dia, horario, estado FROM actividad"
         cursor.execute(query)
         return cursor.fetchall()
     except Exception as e:
