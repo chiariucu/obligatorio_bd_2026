@@ -39,7 +39,7 @@ def eliminar_actividad(id_actividad):
         return False
     try:
         cursor = conexion.cursor()
-        query = "DELETE FROM actividad WHERE id_actividad = %s"
+        query = "DELETE FROM ACTIVIDAD WHERE id_actividad = %s" # Consulta para borrar por ID.
         cursor.execute(query, (id_actividad,))
         conexion.commit()
         print(f"Actividad con ID {id_actividad} eliminada correctamente.")
