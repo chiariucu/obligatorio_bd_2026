@@ -1,10 +1,9 @@
 from BD.obligatorio1.config.database import obtener_conexion
 
-# ABM DE DISCIPLINAS DEPORTIVAS:
+# ABM DE ESPACIOS DEPORTIVOS
 
-# 1. Alta (insertar una disciplina):
-# Recibe el nombre de una disciplina desde el frontend y la inserta en la BD.
-def registrar_disciplina(nombre):
+# 1. Alta (registrar un nuevo espacio):
+def registrar_espacio(nombre, ubicacion, capacidad):
     conexion = obtener_conexion()
     cursor = None
     if conexion is None:
@@ -12,44 +11,18 @@ def registrar_disciplina(nombre):
         return False
     try:
         cursor = conexion.cursor()
-
-        # Consulta (previendo posibles ataque de SQL injection).
-        query = "INSERT INTO DISCIPLINA (nombre) VALUES (%s)"
-        cursor.execute(query, (nombre,))
-        query = "INSERT INTO disciplina (nombre) VALUES (%s)"
-        cursor.execute(query, (nombre_disciplina,))
+        query = """
+            INSERT INTO espacio (nombre, ubicacion, capacidad)
+            VALUES (%s, %s, %s)
+        """
+        cursor.execute(query, (nombre, ubicacion, capacidad))
         conexion.commit()
-
-        print(f"Disciplina '{nombre}' registrada con éxito en la BD.")
-        return True
-    except Exception as e:
-        conexion.rollback()
-        print(f"Error al insertar la disciplina: {e}")
-        return False
-    finally:
-        if cursor is not None:
-            cursor.close()
-        if conexion is not None:
-            conexion.close()
-
-# 2. Baja (eliminar una disciplina deportiva po ID):
-def eliminar_disciplina(id_disciplina):
-    conexion = obtener_conexion()
-    cursor = None
-    if conexion is None:
-        print("No hay conexión con la BD.")
-        return False
-    try:
-        cursor = conexion.cursor()
-        query = "DELETE FROM DISCIPLINA WHERE id_disciplina = %s"
-        cursor.execute(query, (id_disciplina,))
-        conexion.commit()
-        print(f"Disciplina con ID {id_disciplina} eliminada correctamente.")
+        print(f"Espacio '{nombre}' registrado con éxito.")
         return True
     except Exception as e:
         if conexion:
             conexion.rollback()
-        print(f"Error al eliminar la disciplina: {e}")
+        print(f"Error al registrar espacio: {e}")
         return False
     finally:
         if cursor is not None:
@@ -57,8 +30,8 @@ def eliminar_disciplina(id_disciplina):
         if conexion is not None:
             conexion.close()
 
-# 3. Modificar (actualizar nombre por ID):
-def modificar_disciplina(id_disciplina, nuevo_nombre):
+# 2. Baja (eliminar un espacio por su ID):
+def eliminar_espacio(id_espacio):
     conexion = obtener_conexion()
     cursor = None
     if conexion is None:
@@ -66,15 +39,15 @@ def modificar_disciplina(id_disciplina, nuevo_nombre):
         return False
     try:
         cursor = conexion.cursor()
-        query = "UPDATE DISCIPLINA SET nombre = %s WHERE id_disciplina = %s"
-        cursor.execute(query, (nuevo_nombre, id_disciplina))
+        query = "DELETE FROM espacio WHERE id_espacio = %s"
+        cursor.execute(query, (id_espacio,))
         conexion.commit()
-        print(f"Disciplina con ID {id_disciplina} actualizada a '{nuevo_nombre}'.")
+        print(f"Espacio con ID {id_espacio} eliminado correctamente.")
         return True
     except Exception as e:
         if conexion:
             conexion.rollback()
-        print(f"Error al modificar la disciplina: {e}")
+        print(f"Error al eliminar espacio: {e}")
         return False
     finally:
         if cursor is not None:
@@ -82,20 +55,49 @@ def modificar_disciplina(id_disciplina, nuevo_nombre):
         if conexion is not None:
             conexion.close()
 
-# 4. Extra: función para listar (ayuda al frontend para mostrar al usuario qué puede llegar a manipular).
-def listar_disciplinas():
+# 3. Modificar (actualizar datos de un espacio existente).
+def modificar_espacio(id_espacio, nuevo_nombre, nueva_ubicacion, nueva_capacidad):
+    conexion = obtener_conexion()
+    cursor = None
+    if conexion is None:
+        print("No hay conexión con la BD.")
+        return False
+    try:
+        cursor = conexion.cursor()
+        query = """
+            UPDATE espacio 
+            SET nombre = %s, ubicacion = %s, capacidad = %s 
+            WHERE id_espacio = %s
+        """
+        cursor.execute(query, (nuevo_nombre, nueva_ubicacion, nueva_capacidad, id_espacio))
+        conexion.commit()
+        print(f"Espacio con ID {id_espacio} modificado correctamente.")
+        return True
+    except Exception as e:
+        if conexion:
+            conexion.rollback()
+        print(f"Error al modificar espacio: {e}")
+        return False
+    finally:
+        if cursor is not None:
+            cursor.close()
+        if conexion is not None:
+            conexion.close()
+
+# 4. Listar (traer todos los espacios):
+def listar_espacios():
     conexion = obtener_conexion()
     cursor = None
     if conexion is None:
         print("No hay conexión con la BD.")
         return []
     try:
-        cursor = conexion.cursor(dictionary=True) # dictionary=True nos devuelve los datos ordenados con los nombres de las columnas
-        query = "SELECT id_disciplina, nombre FROM DISCIPLINA"
+        cursor = conexion.cursor(dictionary=True)
+        query = "SELECT id_espacio, nombre, ubicacion, capacidad FROM espacio"
         cursor.execute(query)
         return cursor.fetchall()
     except Exception as e:
-        print(f"Error al listar las disciplinas: {e}")
+        print(f"Error al listar espacios: {e}")
         return []
     finally:
         if cursor is not None:

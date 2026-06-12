@@ -8,7 +8,6 @@ DB_CONFIG = {
     "port": 3306,
     "user": "root",
     "password": "rootpassword",
-    #"database": "obligatorio1",
     "database": "actividades_deportivas",
     "autocommit": False  # Lo dejamos en False para que no se guarden datos incompletos antes de tiempo.
 }
